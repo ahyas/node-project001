@@ -1,17 +1,16 @@
 <html lang="en">
 <head>
     <!-- <meta> tags> -->
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.12.1/css/jquery.dataTables.min.css">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.datatables.net/select/1.4.0/css/select.dataTables.min.css">
-    <title></title>
+    <title><%= data.title %></title>
 </head>
 <nav class="navbar navbar-expand-lg navbar-light bg-light" style="margin-bottom:20px">
-    <a class="navbar-brand" href="#">
+    <a class="navbar-brand" href="/">
         <img src="/logo/bootstrap-solid.svg" width="30" height="30" alt=""> Node-app
     </a>
 
-    <a class="navbar-brand" href="#">Navbar</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -19,16 +18,21 @@
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav mr-auto">
         <li class="nav-item active">
-          <a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
+            <a class="nav-link" href="/home">Home <span class="sr-only">(current)</span></a>
         </li>
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-expanded="false">
-            Reference
-          </a>
-          <div class="dropdown-menu">
-            <a class="dropdown-item" href="/reference/categories">Categories</a>
-            <a class="dropdown-item" href="/reference/brands">Brands</a>
-          </div>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Transactions
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    <a class="dropdown-item" href="/transaction/sell">Sell</a>
+                    <a class="dropdown-item" href="/transaction/buy">Buy</a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="#">Something else here</a>
+                </div>
+            </li>
+        <li class="nav-item active">
+            <a class="nav-link" href="/inventory">Inventory <span class="sr-only">(current)</span></a>
         </li>
         <li class="nav-item active">
             <a class="nav-link" href="/about">About <span class="sr-only">(current)</span></a>

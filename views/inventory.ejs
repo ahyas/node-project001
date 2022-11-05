@@ -1,0 +1,159 @@
+<%- include('layouts/header') -%>
+<body>
+    <div class="container">
+        <div class="row">
+        <div class="card border-light mb-3">
+            <div class="card-header">Header</div>
+            <div class="card-body">
+              <form id="formProduct">
+                <div class="form-group">    
+                    <input type="hidden" class="form-control" id="id_product">
+                    <div class="row">
+                        <div class="col col-md-8">
+                            <label for="sku"><b>SKU</b></label>
+                            <input type="text" class="form-control" id="sku">
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col col-md-10">
+                            <label for="category"><b>Name</b></label>
+                            <input type="text" class="form-control" id="name">
+                        </div>
+                        <div class="col col-md-2">
+                            <label for="brand"><b>Price</b></label>
+                            <input type="text" class="form-control" id="price">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col col-md-2">
+                            <label for="brand"><b>Stock</b></label>
+                            <input type="number" class="form-control" id="stock">
+                        </div>
+                        <div class="form-group col-md-5">
+                            <label for="category"><b>Category</b></label>
+                            <select class="custom-select" id="category" name="category">
+                                <option selected disabled value="">Choose category</option>
+                                <% for(let a=0; a < categories.length; a++) {%>
+                                    <option value=<%= categories[a]._id %>><%= categories[a].name %></option>
+                                <% } %>
+                            </select>
+                        </div>
+                        <div class="col col-md-5">
+                            <label for="brand"><b>Brand</b></label>
+                            <select class="custom-select" id="brand" name="brand">
+                                <option selected disabled value="">Choose brand</option>
+                                <% for(let a=0; a < brands.length; a++) {%>
+                                <option value=<%= brands[a]._id %>><%= brands[a].name %></option>
+                                <%}%>
+                            </select>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary btn-sm update">Update</button> <button class="btn btn-primary btn-sm save">Save</button>
+                </div>
+                
+                </form>
+              <table class="table table-striped tb_inventory" style="font-size: 14px;">
+                <thead>
+                    <th>SKU</th>
+                    <th>Name</th>
+                    <th>Stock</th>
+                    <th>Price</th>
+                    <th>Value</th>
+                    <th>Category</th>
+                    <th>Brands</th>
+                    <th width="150px">Actions</th>
+                </thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+    </div>
+</body>
+<%- include('layouts/footer') -%>
+
+<script type="text/javascript">
+$(document).ready(function(){
+    $('.tb_inventory').DataTable({
+        ajax:'/api/products',
+        processing:false,
+        serverside:false,
+        columns:[
+            {data:'sku'},
+            {data:'name'},
+            {data:'stock'},
+            {data:'price'},
+            {data:'subtotal'},
+            {data:'category_name.name'},
+            {data:'brand_name.name'},
+            {data:'_id', render:function(data, type, full){
+                return'<button class="btn btn-secondary btn-sm edit" data-id="'+data+'">Edit</button> <button class="btn btn-secondary btn-sm edit" data-id="'+data+'">View</button> <button class="btn btn-danger btn-sm delete" data-id="'+data+'">Delete</button>'
+            }}
+        ]
+    })
+
+    const form = (id, sku, name, price, stock, category, brand) => {
+        $('#id_product').val(id)
+        $('#sku').val(sku)
+        $('#name').val(name)
+        $('#price').val(price)
+        $('#stock').val(stock)
+        $('#category').val(category)
+        $('#brand').val(brand)
+    }
+
+    $('body').on('click','.edit', async (e) => {
+        let id = e.target.dataset.id
+        await axios.put(`/api/products/${id}`).then((res)=>{
+            let sku = res.data.sku
+            let name = res.data.name
+            let price = res.data.price
+            let stock = res.data.stock
+            let category = res.data.category
+            let brand = res.data.brand
+
+            form(id, sku, name, price, stock, category, brand)
+        }).catch((err)=>console.log(err))
+    })
+
+    $('body').on('click','.update', async (e)=>{
+        e.preventDefault()
+        let id = $('#id_product').val()
+        let sku = $('#sku').val()
+        let name = $('#name').val()
+        let price = $('#price').val()
+        let stock = $('#stock').val()
+        let category = $('#category').val()
+        let brand = $('#brand').val()
+        console.log(id)
+        await axios.patch(`/api/products/${id}`,{sku:sku, name:name, price:price, category:category, brand:brand, stock:stock}).then((res)=>{
+            console.log('Success')
+            $('.tb_inventory').DataTable().ajax.reload()
+        }).catch((err)=>console.log(err))
+    })
+
+    $('body').on('click','.save', async (e)=>{
+        e.preventDefault()
+        let sku = $('#sku').val()
+        let name = $('#name').val()
+        let price = $('#price').val()
+        let stock = $('#stock').val()
+        let category = $('#category').val()
+        let brand = $('#brand').val()
+
+        await axios.post(`/api/products`,{sku:sku, name:name, price:price, category:category, brand:brand, stock:stock}).then((res)=>{
+            $('.tb_inventory').DataTable().ajax.reload()
+        }).catch((err)=>console.log(err))
+    })
+
+    $('body').on('click','.delete', async (e)=>{
+        let id = e.target.dataset.id
+        if(confirm('Are you sure you want to delete this data?')){
+            await axios.delete(`/api/products/${id}`).then(()=>{
+                $('.tb_inventory').DataTable().ajax.reload()
+            }).catch((err)=>console.log(err))
+        }
+    })
+})
+</script>

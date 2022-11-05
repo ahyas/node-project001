@@ -5,7 +5,8 @@ const collection = mongoose.Schema({
     name:String,
     price:Number,
     category:String,
-    brand:String
+    brand:String,
+    stock:Number
 })
 
 module.exports = mongoose.model('products', collection)
